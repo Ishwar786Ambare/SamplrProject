@@ -5,41 +5,44 @@ const patients = [];
 
 
 function addPatient() {
-    const name = document.getElementById("name");
+    const name = document.getElementById("name").value;
     const gender = document.querySelector('input[name="gender"]:checked').value;
-    const age = document.getElementById("age");
-
-    if (name && gender && age) {
+    const age = document.getElementById("age").value;
+    const condition = document.getElementById("condition").value;
+    
+    if (name && gender && age && condition) {
         var personInformation = {
             name: name,
             age: age,
-            gender: gender
+            gender: gender,
+            condition: condition
         }
 
         patients.push(personInformation);
-
-        restform();
+        resetForm();
         generateReport();
 
     }
 }
 
-function restform() {
+
+function resetForm() {
     document.getElementById("name").value = "";
+    document.querySelector('input[name="gender"]:checked').checked = false;
     document.getElementById("age").value = "";
-    document.querySelector('input[name="gender":checked]').value = false;
     document.getElementById("condition").value = "";
 }
 
 
-
 function generateReport() {
     const numPatients = patients.length;
+    
     const conditionsCount = {
         Diabetes: 0,
         Thyroid: 0,
         "High Blood Pressure": 0,
     };
+
     const genderConditionsCount = {
         Male: {
             Diabetes: 0,
@@ -52,10 +55,15 @@ function generateReport() {
             "High Blood Pressure": 0,
         },
     };
+
     for (const patient of patients) {
+        console.log('patient-->',patient);
         conditionsCount[patient.condition]++;
         genderConditionsCount[patient.gender][patient.condition]++;
     }
+
+    console.log(conditionsCount);
+    console.log(genderConditionsCount);
 
     report.innerHTML = `Number of patients: ${numPatients}<br><br>`;
     report.innerHTML += `Conditions Breakdown:<br>`;
@@ -70,9 +78,10 @@ function generateReport() {
             report.innerHTML += `&nbsp;&nbsp;${condition}: ${genderConditionsCount[gender][condition]}<br>`;
         }
 
-
     }
 }
+
+addPatientButton.addEventListener("click", addPatient);
 
 function searchCondition() {
     const input = document.getElementById('conditionInput').value.toLowerCase();
@@ -104,4 +113,6 @@ function searchCondition() {
             resultDiv.innerHTML = 'An error occurred while fetching data.';
         });
 }
+
 btnSearch.addEventListener('click', searchCondition);
+
